@@ -1,19 +1,43 @@
 import React, { useState } from 'react';
+import RatingSelect from './RatingSelect';
 import Button from './shared/Button';
 import Card from './shared/Card';
 
-function FeedbackForm() {
+function FeedbackForm({handleAdd}) {
   const [text, setText] = useState('');
+  const [rating, setRating] = useState(10);
+  const [btnDisabled, setBtnDisabled] = useState(true);
+  const [message, setMessage] = useState('');
 
   const handleTextChange = (e) => {
     setText(e.target.value);
+    if(text.trim().length < 9) {
+        setMessage('Review needs to be more than 10 characters')
+    } else {
+        setMessage('')
+        setBtnDisabled(false)
+    }
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if(text.trim().length > 10) {
+      const newFeedback = {
+        text,
+        rating
+      }
+
+      handleAdd(newFeedback)
+
+      setText('')
+    }
+  }
 
   return (
     <Card>
-      <form>
+      <form onSubmit={handleSubmit}>
         <h2>How would you rate your service with us?</h2>
-        {/* todo rating select component */}
+        <RatingSelect select={(rating) => setRating(rating)}/>
         <div className='input-group'>
           <input
             type='text'
@@ -21,8 +45,9 @@ function FeedbackForm() {
             onChange={handleTextChange}
             value={text}
           />
-          <Button type='submit'>Send</Button>
+          <Button type='submit' isDisabled={btnDisabled}>Send</Button>
         </div>
+        {message && <div className='message'>{message}</div>}
       </form>
     </Card>
   );
