@@ -13,6 +13,10 @@ body {
   line-height: 1.6;
 }
 
+a:visited {
+  color: #ff6a95
+}
+
 ul {
   list-style: none;
 }
